@@ -2,7 +2,7 @@
 A daily Exercises Tracker APP:
 New User can be added.
 Users can track their daily exercises with the modification and deletion of exercise if require .
-Exercises list with the respective username & exercises , shows the track of exercises for respective user.
+Exercises list shows all the exercises with its date , duration and the respective user.
 
 
 =>In this I have used React on the front end, with Node & Express JS on the back end and database used is MongoDb.
