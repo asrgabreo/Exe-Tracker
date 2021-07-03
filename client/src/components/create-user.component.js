@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-let API_ROOT = 'http://localhost:8000';
+let API_ROOT = 'http://localhost:5000';
 
 if(process.env.NODE_ENV === 'production'){
-  API_ROOT = 'https://seminar-eval.herokuapp.com';
+  API_ROOT = 'https://exe-tracker.herokuapp.com';
 }
 export default class CreateUser extends Component {
   constructor(props) {

@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-let API_ROOT = 'http://localhost:8000';
+let API_ROOT = 'http://localhost:5000';
 
 if(process.env.NODE_ENV === 'production'){
-  API_ROOT = 'https://seminar-eval.herokuapp.com';
+  API_ROOT = 'https://exe-tracker.herokuapp.com';
 }
 export default class CreateExercise extends Component {
   constructor(props) {
