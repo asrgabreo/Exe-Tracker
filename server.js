@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const path = require("path");
 const app = express();
 app.use(morgan("tiny"));
 if(process.env.NODE_ENV === 'production'){
