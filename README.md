@@ -10,7 +10,7 @@ Exercises list shows all the exercises with its date , duration and the respecti
 
 Created by Abhishek Singh @ ( https://github.com/asrgabreo ) , give a star if you like it.</br>
 
-### [Live Site] https://a-mern-exe-tracker.herokuapp.com/ 
+### [Live Site] https://exe-tracker.herokuapp.com/ 
 
 Setup:
 => run npm i && npm start for backend and src side to start the development server and app-site respectively .</br>
