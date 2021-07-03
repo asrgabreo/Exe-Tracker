@@ -4,14 +4,7 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const path = require("path");
 const app = express();
-app.use(morgan("tiny"));
-if(process.env.NODE_ENV === 'production'){
-  app.use(express.static('client/build'));
-  
-  app.get('*', (req, res) => {
-      res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-  });
-}
+
 require('dotenv').config();
 
 app.use(cors());
@@ -28,6 +21,13 @@ app.use(express.json());
 const exercisesRouter = require('./routes/exercises');
 const usersRouter = require('./routes/users');
 
+app.use(morgan("tiny"));
+if (process.env.NODE_ENV === 'production') {  
+  app.use(express.static(path.join(__dirname, "client/build")));
+  app.get("/*", (_, res) => {
+   res.sendFile(path.join(__dirname, "client/build", "index.html"));
+  });
+}
 app.use('/exercises', exercisesRouter);
 app.use('/users', usersRouter);
 
