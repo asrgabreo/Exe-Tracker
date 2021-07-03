@@ -4,19 +4,23 @@ import Exercise from './Exercise';
 
 class ExercisesList extends React.Component {
   state = {
-    exercises: []
+    exercises: [],
+    isLoading: false,
   };
   componentDidMount = () => {
+    this.setState({isLoading: true});
     Axios.get('/exercises').then(response => {
       if (response.data.length > 0) {
         this.setState({
-          exercises: response.data
+          exercises: response.data,
+          isLoading:false,
         });
       }
     });
   };
 
   exerciseList = () => {
+    console.log(this.state.exercises)
     return this.state.exercises.map(currentexercise => {
       return (
         <Exercise
@@ -42,6 +46,9 @@ class ExercisesList extends React.Component {
       });
   };
   render = () => {
+    if (this.state.isLoading) {
+      return <p>Loading ...</p>;
+    }
     return (
       <div className="container">
         <br />

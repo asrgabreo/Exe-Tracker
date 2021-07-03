@@ -10,15 +10,18 @@ class CreateExercise extends React.Component {
     date: new Date(),
     users: [],
     username: '',
-    message: ''
+    message: '',
+    isLoading: false,
   };
 
   componentDidMount = () => {
+    this.setState({isLoading: true});
     Axios.get('/users').then(response => {
       if (response.data.length > 0) {
         this.setState({
           users: response.data.map(user => user.username),
-          username: response.data[0].username
+          username: response.data[0].username,
+          isLoading: false,
         });
       }
     });
@@ -93,6 +96,9 @@ class CreateExercise extends React.Component {
   };
 
   render = () => {
+    if (this.state.isLoading) {
+      return <p>Loading ...</p>;
+    }
     return (
       <div className="container">
         <br />
