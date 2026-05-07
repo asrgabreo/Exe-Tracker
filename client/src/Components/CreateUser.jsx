@@ -4,7 +4,8 @@ import Axios from '../Axios';
 class CreateUser extends React.Component {
   state = {
     username: '',
-    message: ''
+    message: '',
+    error: '',
   };
 
 
@@ -18,24 +19,21 @@ class CreateUser extends React.Component {
     event.preventDefault();
     if (this.state.username !== '') {
       const user = {
-        username: this.state.username
+        username: this.state.username.trim()
       };
-
-      console.log(user);
 
       Axios.post('users/add', user)
         .then(response => {
-          console.log(response.data);
           this.setState({
-            message: response.data,
-            username: ''
+            message: response.data.message,
+            username: '',
+            error: '',
           });
         })
         .catch(error => {
-          console.log(error);
           this.setState({
-            message: error.message,
-            username: ''
+            error: error.response && error.response.data ? error.response.data.message : error.message,
+            message: '',
           });
         });
     }
@@ -43,24 +41,26 @@ class CreateUser extends React.Component {
 
   render = () => {
     return (
-      <div className="container">
-        <br />
-        <div className="display-4">Create Your Account</div>
-        <br />
-        <br />
-        {this.state.message !== '' ? (
-          <div className="alert" role="alert">
+      <div className="container page-panel form-page">
+        <div className="page-header">
+          <div>
+            <p className="eyebrow">People</p>
+            <h1>New User</h1>
+          </div>
+        </div>
+        {this.state.message ? (
+          <div className="alert alert-success" role="alert">
             {this.state.message}
           </div>
         ) : null}
-        <br />
-        <br />
-        <div className="container">
+        {this.state.error ? <div className="alert alert-danger" role="alert">{this.state.error}</div> : null}
           <form onSubmit={this.onSubmitHandler}>
             <div className="form-group">
               <label>Username: </label>
               <input
                 type="text"
+                minLength="3"
+                required
                 className="form-control"
                 value={this.state.username}
                 onChange={this.onChangeUserNameHandler}
@@ -74,7 +74,6 @@ class CreateUser extends React.Component {
               />
             </div>
           </form>
-        </div>
       </div>
     );
   };

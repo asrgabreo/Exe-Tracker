@@ -5,9 +5,166 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #f4f7fb;
+  color: #172033;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.app-navbar {
+  background: #172033;
+  box-shadow: 0 10px 30px rgba(23, 32, 51, 0.12);
+}
+
+.app-navbar .navbar-brand {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.app-navbar .nav-link {
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 600;
+}
+
+.app-navbar .nav-link:hover,
+.app-navbar .navbar-brand:hover {
+  color: #ffffff;
+}
+
+.page-panel {
+  padding-bottom: 48px;
+  padding-top: 48px;
+}
+
+.page-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.page-header h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.eyebrow {
+  color: #637083;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.form-page form,
+.exercise-table,
+.empty-state {
+  background: #ffffff;
+  border: 1px solid #dde5f0;
+  border-radius: 8px;
+  box-shadow: 0 16px 36px rgba(23, 32, 51, 0.08);
+}
+
+.form-page form {
+  max-width: 680px;
+  padding: 28px;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-control {
+  border-color: #cfd8e6;
+  border-radius: 6px;
+  min-height: 44px;
+}
+
+.form-control:focus {
+  border-color: #246bfe;
+  box-shadow: 0 0 0 0.2rem rgba(36, 107, 254, 0.14);
+}
+
+.btn {
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.btn-primary {
+  background: #246bfe;
+  border-color: #246bfe;
+}
+
+.exercise-table {
+  overflow: hidden;
+}
+
+.exercise-table .table {
+  margin-bottom: 0;
+}
+
+.exercise-table thead th {
+  background: #eef3f9;
+  border-bottom: 0;
+  color: #455368;
+  font-size: 0.78rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.exercise-table td,
+.exercise-table th {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+.table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.empty-state {
+  padding: 32px;
+}
+
+.empty-state h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.empty-state p,
+.status-message {
+  color: #637083;
+  margin-bottom: 0;
+}
+
+.react-datepicker-wrapper {
+  display: block;
+}
+
+@media (max-width: 767px) {
+  .app-navbar .container,
+  .app-navbar .navbar-nav {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .page-panel {
+    padding-top: 32px;
+  }
+
+  .page-header h1 {
+    font-size: 1.85rem;
+  }
+
+  .form-page form {
+    padding: 20px;
+  }
 }

@@ -1,11 +1,6 @@
 import axios from 'axios';
 
-let API_ROOT = 'http://localhost:5000';
-
-if(process.env.NODE_ENV === 'production'){
-  API_ROOT = 'https://exe-tracker.herokuapp.com'
-}
-
+const API_ROOT = import.meta.env.VITE_API_ROOT || (import.meta.env.PROD ? '' : 'http://localhost:5000');
 
 const Axios = axios.create({
   baseURL: API_ROOT

@@ -1,40 +1,37 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Axios from '../Axios';
 
-class EditExercise extends React.Component {
+class CreateExercise extends React.Component {
   state = {
     description: '',
     duration: '',
     date: new Date(),
     users: [],
     username: '',
-    message: ''
+    message: '',
+    error: '',
+    isLoading: false,
   };
+
   componentDidMount = () => {
-    Axios.get('exercises/' + this.props.match.params.id)
+    this.setState({isLoading: true});
+    Axios.get('/users')
       .then(response => {
         this.setState({
-          username: response.data.username,
-          description: response.data.description,
-          duration: response.data.duration,
-          date: new Date(response.data.date)
+          users: response.data.map(user => user.username),
+          username: response.data.length > 0 ? response.data[0].username : '',
+          isLoading: false,
+          error: '',
         });
       })
-      .catch(function(error) {
-        console.log(error);
-      });
-    Axios.get('/users/')
-      .then(response => {
-        if (response.data.length > 0) {
-          this.setState({
-            users: response.data.map(user => user.username)
-          });
-        }
-      })
       .catch(error => {
-        console.log(error);
+        this.setState({
+          isLoading: false,
+          error: error.response && error.response.data ? error.response.data.message : error.message,
+        });
       });
   };
 
@@ -72,55 +69,60 @@ class EditExercise extends React.Component {
     ) {
       const exercise = {
         username: this.state.username,
-        description: this.state.description,
+        description: this.state.description.trim(),
         duration: this.state.duration,
         date: this.state.date
       };
 
-      console.log(exercise);
-
-      Axios.post('exercises/update/' + this.props.match.params.id, exercise)
+      Axios.post('exercises/add', exercise)
         .then(response => {
-          console.log(response.data);
           this.setState({
-            message: response.data + `\nRedirecting....`,
+            message: response.data.message,
+            error: '',
             description: '',
             duration: '',
             date: new Date(),
-            users: [],
-            username: ''
           });
-          window.location = '/';
+          this.props.navigate('/');
         })
         .catch(error => {
-          console.log(error);
           this.setState({
-            message: error.message
+            error: error.response && error.response.data ? error.response.data.message : error.message,
+            message: '',
           });
         });
     }
   };
 
   render = () => {
+    if (this.state.isLoading) {
+      return <div className="container page-panel"><p className="status-message">Loading users...</p></div>;
+    }
     return (
-      <div className="container">
-        <br />
-        <div className="display-4">Edit Exercise</div>
-        <br />
-        <br />
-        {this.state.message !== '' ? (
-          <div className="alert" role="alert">
+      <div className="container page-panel form-page">
+        <div className="page-header">
+          <div>
+            <p className="eyebrow">Log movement</p>
+            <h1>New Exercise</h1>
+          </div>
+        </div>
+        {this.state.message ? (
+          <div className="alert alert-success" role="alert">
             {this.state.message}
           </div>
         ) : null}
-        <br />
-        <br />
-        <div className="container">
+        {this.state.error ? <div className="alert alert-danger" role="alert">{this.state.error}</div> : null}
+        {this.state.users.length === 0 ? (
+          <div className="empty-state">
+            <h2>No users available</h2>
+            <p>Create a user before logging an exercise.</p>
+            <Link className="btn btn-primary" to="/user">Create User</Link>
+          </div>
+        ) : (
           <form onSubmit={this.onSubmitHandler}>
             <div className="form-group">
               <label>Username: </label>
               <select
-                ref="userInput"
                 required
                 className="form-control"
                 value={this.state.username}
@@ -148,7 +150,9 @@ class EditExercise extends React.Component {
             <div className="form-group">
               <label>Duration (in minutes): </label>
               <input
-                type="text"
+                type="number"
+                min="1"
+                required
                 className="form-control"
                 value={this.state.duration}
                 onChange={this.onChangeDurationHandler}
@@ -158,6 +162,7 @@ class EditExercise extends React.Component {
               <label>Date: </label>
               <div>
                 <DatePicker
+                  className="form-control"
                   selected={this.state.date}
                   onChange={this.onChangeDateHandler}
                 />
@@ -172,10 +177,10 @@ class EditExercise extends React.Component {
               />
             </div>
           </form>
-        </div>
+        )}
       </div>
     );
   };
 }
 
-export default EditExercise;
+export default CreateExercise;

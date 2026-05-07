@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Axios from '../Axios';
 
-class CreateExercise extends React.Component {
+class EditExercise extends React.Component {
   state = {
     description: '',
     duration: '',
@@ -11,20 +11,33 @@ class CreateExercise extends React.Component {
     users: [],
     username: '',
     message: '',
+    error: '',
     isLoading: false,
   };
-
   componentDidMount = () => {
-    this.setState({isLoading: true});
-    Axios.get('/users').then(response => {
-      if (response.data.length > 0) {
+    this.setState({ isLoading: true });
+
+    Promise.all([
+      Axios.get('exercises/' + this.props.params.id),
+      Axios.get('/users/')
+    ])
+      .then(response => {
         this.setState({
-          users: response.data.map(user => user.username),
-          username: response.data[0].username,
+          username: response[0].data.username,
+          description: response[0].data.description,
+          duration: response[0].data.duration,
+          date: new Date(response[0].data.date),
+          users: response[1].data.map(user => user.username),
           isLoading: false,
+          error: '',
         });
-      }
-    });
+      })
+      .catch(error => {
+        this.setState({
+          isLoading: false,
+          error: error.response && error.response.data ? error.response.data.message : error.message,
+        });
+      });
   };
 
   onChangeUserNameHandler = event => {
@@ -61,35 +74,27 @@ class CreateExercise extends React.Component {
     ) {
       const exercise = {
         username: this.state.username,
-        description: this.state.description,
+        description: this.state.description.trim(),
         duration: this.state.duration,
         date: this.state.date
       };
 
-      console.log(exercise);
-
-      Axios.post('exercises/add', exercise)
+      Axios.post('exercises/update/' + this.props.params.id, exercise)
         .then(response => {
-          console.log(response.data);
           this.setState({
-            message: response.data+`\nRedirecting....`,
+            message: response.data.message,
+            error: '',
             description: '',
             duration: '',
             date: new Date(),
-            users: [],
             username: ''
           });
-          window.location = '/';
+          this.props.navigate('/');
         })
         .catch(error => {
-          console.log(error);
           this.setState({
-            message: error.message,
-            description: '',
-            duration: '',
-            date: new Date(),
-            users: [],
-            username: ''
+            error: error.response && error.response.data ? error.response.data.message : error.message,
+            message: '',
           });
         });
     }
@@ -97,27 +102,27 @@ class CreateExercise extends React.Component {
 
   render = () => {
     if (this.state.isLoading) {
-      return <p>Loading ...</p>;
+      return <div className="container page-panel"><p className="status-message">Loading exercise...</p></div>;
     }
+
     return (
-      <div className="container">
-        <br />
-        <div className="display-4">Create Your Own Exercise</div>
-        <br />
-        <br />
-        {this.state.message !== '' ? (
-          <div className="alert" role="alert">
+      <div className="container page-panel form-page">
+        <div className="page-header">
+          <div>
+            <p className="eyebrow">Update log</p>
+            <h1>Edit Exercise</h1>
+          </div>
+        </div>
+        {this.state.message ? (
+          <div className="alert alert-success" role="alert">
             {this.state.message}
           </div>
         ) : null}
-        <br />
-        <br />
-        <div className="container">
+        {this.state.error ? <div className="alert alert-danger" role="alert">{this.state.error}</div> : null}
           <form onSubmit={this.onSubmitHandler}>
             <div className="form-group">
               <label>Username: </label>
               <select
-                ref="userInput"
                 required
                 className="form-control"
                 value={this.state.username}
@@ -145,7 +150,9 @@ class CreateExercise extends React.Component {
             <div className="form-group">
               <label>Duration (in minutes): </label>
               <input
-                type="text"
+                type="number"
+                min="1"
+                required
                 className="form-control"
                 value={this.state.duration}
                 onChange={this.onChangeDurationHandler}
@@ -155,6 +162,7 @@ class CreateExercise extends React.Component {
               <label>Date: </label>
               <div>
                 <DatePicker
+                  className="form-control"
                   selected={this.state.date}
                   onChange={this.onChangeDateHandler}
                 />
@@ -164,15 +172,14 @@ class CreateExercise extends React.Component {
             <div className="form-group">
               <input
                 type="submit"
-                value="Create Exercise Log"
+                value="Save Changes"
                 className="btn btn-primary"
               />
             </div>
           </form>
-        </div>
       </div>
     );
   };
 }
 
-export default CreateExercise;
+export default EditExercise;
